@@ -29,5 +29,8 @@
   ],
   "publishConfig": {
     "registry": "http://registry.npmjs.org"
+  },
+  "repository": {
+    "url": "https://github.com/cx690/react-loadable"
   }
 }
