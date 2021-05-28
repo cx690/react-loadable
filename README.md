@@ -1,4 +1,4 @@
-- [中文](http://www.google.com "中文")
+- [中文](https://github.com/cx690/react-loadable/blob/main/README_zh_CN.md "中文")
 
 `A higher order component for loading components with dynamic imports.Support vite and webpack.`
 
