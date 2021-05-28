@@ -26,5 +26,8 @@
   "keywords": [
     "react-loadable",
     "vite"
-  ]
+  ],
+  "publishConfig": {
+    "registry": "http://registry.npmjs.org"
+  }
 }
