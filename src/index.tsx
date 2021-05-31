@@ -59,6 +59,7 @@ export default function Loadable(option: IpProps | (() => asyncCom)) {
         importComponent = option.loader;
         delay = option.delay;
         loading = option.loading || Loading;
+        timeout = option.timeout || timeout;
     }
     return class AsyncCom extends React.Component {
         state: {
