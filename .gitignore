@@ -4,3 +4,5 @@ esm
 cjs
 *.local
 /yarn-error.log
+/.yarnrc
+/.npmrc
