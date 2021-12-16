@@ -28,7 +28,7 @@
     "vite"
   ],
   "publishConfig": {
-    "registry": "http://registry.npmjs.org"
+    "registry": "https://registry.npmjs.org"
   },
   "repository": {
     "url": "https://github.com/cx690/react-loadable"
