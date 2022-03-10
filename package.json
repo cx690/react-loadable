@@ -1,6 +1,6 @@
 {
   "name": "@caixue/react-loadable",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "A higher order component for loading components with dynamic imports.Support vite and webpack.",
   "main": "cjs/index.js",
   "module": "esm/index.js",

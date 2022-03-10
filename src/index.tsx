@@ -33,10 +33,10 @@ const Loading: React.FC<LoadingProps> = (props) => {
     }
 }
 
-type asyncCom = Promise<{ default: React.FC | React.ComponentClass }>;
+type asyncCom<T = any> = Promise<{ default: React.FC<T> | React.ComponentClass<T> | ((props: T, ...args: any[]) => any) }>;
 
-interface IpProps {
-    loader: () => asyncCom;
+interface IpProps<T = any> {
+    loader: () => asyncCom<T>;
     /** The lazy load time(ms); 延迟加载时间 单位毫秒 */
     delay?: number;
     /** timeout(ms); 超时设置 单位毫秒 */
@@ -48,7 +48,7 @@ interface IpProps {
 const ALL_INITIALIZERS: (() => asyncCom)[] = [];
 const READY_INITIALIZERS: Promise<{ default: React.FC | React.ComponentClass }>[] = [];
 
-export default function Loadable(option: IpProps | (() => asyncCom)) {
+export default function Loadable<T = any>(option: IpProps<T> | (() => asyncCom<T>)) {
     let importComponent: () => asyncCom,
         delay: number | undefined,
         loading: React.FC<LoadingProps> | React.ComponentClass<LoadingProps> = Loading,
@@ -61,7 +61,7 @@ export default function Loadable(option: IpProps | (() => asyncCom)) {
         loading = option.loading || Loading;
         timeout = option.timeout ?? timeout;
     }
-    return class AsyncCom extends React.Component {
+    return class AsyncCom extends React.Component<T> {
         state: {
             isLoading: boolean;
             isError: boolean;
