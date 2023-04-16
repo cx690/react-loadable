@@ -1,6 +1,6 @@
 {
   "name": "@caixue/react-loadable",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A higher order component for loading components with dynamic imports.Support vite and webpack.",
   "main": "cjs/index.js",
   "module": "esm/index.js",
@@ -9,7 +9,8 @@
   "license": "MIT",
   "files": [
     "cjs",
-    "esm"
+    "esm",
+    "README.md"
   ],
   "scripts": {
     "build": "tsc && tsc --outDir ./cjs --module commonjs"
@@ -21,7 +22,7 @@
     "typescript": "^4.3.2"
   },
   "peerDependencies": {
-    "react": "^16.8.0 || ^17.0.1"
+    "react": "^16.8.0 || ^17.0.1 || ^18.0.0"
   },
   "keywords": [
     "react-loadable",

@@ -33,7 +33,7 @@ const Loading: React.FC<LoadingProps> = (props) => {
     }
 }
 
-type asyncCom<T = any> = Promise<{ default: React.FC<T> | React.ComponentClass<T> | ((props: T, ...args: any[]) => any) }>;
+type asyncCom<T = any> = Promise<{ default: React.FC<T> | React.ComponentClass<T> | React.PureComponent<T> | ((props: T, ...args: any[]) => any) }>;
 
 interface IpProps<T = any> {
     loader: () => asyncCom<T>;
