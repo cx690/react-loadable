@@ -66,7 +66,7 @@ export default function Loadable<T = any>(option: IpProps<T> | (() => asyncCom<T
             isLoading: boolean;
             isError: boolean;
             isTimedOut: boolean;
-            component?: JSX.Element;
+            Component?: React.ElementType;
         };
         constructor(props: any) {
             super(props);
@@ -113,7 +113,7 @@ export default function Loadable<T = any>(option: IpProps<T> | (() => asyncCom<T
                 const res = await READY_INITIALIZERS[index];
                 this.handleRes(res);
             } else {
-                if (this.state.component) return;
+                if (this.state.Component) return;
                 this.getComponent();
             }
         }
@@ -138,7 +138,8 @@ export default function Loadable<T = any>(option: IpProps<T> | (() => asyncCom<T
                 });
             } else {
                 this.setState({
-                    component: <Component {...this.props} />,
+                    // component: <Component {...this.props} />,
+                    Component,
                     isLoading: false,
                     isError: false,
                     isTimedOut: false,
@@ -147,8 +148,12 @@ export default function Loadable<T = any>(option: IpProps<T> | (() => asyncCom<T
         }
         render() {
             const Loading = loading;
-            const { isError, isLoading, isTimedOut } = this.state;
-            return this.state.component ?? <Loading isError={isError} isLoading={isLoading} isTimedOut={isTimedOut} retry={this.getComponent} />;
+            const { isError, isLoading, isTimedOut, Component } = this.state;
+            return (
+                Component
+                    ? <Component {...this.props} />
+                    : <Loading isError={isError} isLoading={isLoading} isTimedOut={isTimedOut} retry={this.getComponent} />
+            );
         }
     }
 }
