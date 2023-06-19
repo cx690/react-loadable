@@ -1,5 +1,6 @@
-
 import React from 'react';
+
+const forwardRefSymbol = React.forwardRef(() => null).$$typeof;
 interface LoadingProps {
     isError?: boolean;
     isTimedOut?: boolean;
@@ -48,6 +49,7 @@ interface IpProps<T = any> {
 const ALL_INITIALIZERS: (() => asyncCom)[] = [];
 const READY_INITIALIZERS: Promise<{ default: React.FC | React.ComponentClass }>[] = [];
 
+// T is loader component's propsType
 export default function Loadable<T = any>(option: IpProps<T> | (() => asyncCom<T>)) {
     let importComponent: () => asyncCom,
         delay: number | undefined,
@@ -68,6 +70,11 @@ export default function Loadable<T = any>(option: IpProps<T> | (() => asyncCom<T
             isTimedOut: boolean;
             Component?: React.ElementType;
         };
+
+        // React.ComponentClass<T> | 
+        /** '#' start means private property  */
+        #refPromise: Promise<any>;
+        #resolveRef: (value: any) => void;
         constructor(props: any) {
             super(props);
             this.state = {
@@ -77,6 +84,9 @@ export default function Loadable<T = any>(option: IpProps<T> | (() => asyncCom<T
             }
             this.getComponent = this.getComponent.bind(this);
             this.handleRes = this.handleRes.bind(this);
+            this.#refPromise = new Promise(resolve => {
+                this.#resolveRef = resolve;
+            });
         }
         async getComponent() {
             const index = ALL_INITIALIZERS.indexOf(importComponent);
@@ -146,12 +156,23 @@ export default function Loadable<T = any>(option: IpProps<T> | (() => asyncCom<T
                 });
             }
         }
+
+        /** get resolve component ref  */
+        async getRef() {
+            return this.#refPromise;
+        }
+
         render() {
             const Loading = loading;
             const { isError, isLoading, isTimedOut, Component } = this.state;
+
             return (
                 Component
-                    ? <Component {...this.props} />
+                    //@ts-ignore
+                    ? ((Component.$$typeof === forwardRefSymbol || React.Component.isPrototypeOf(Component)) ?
+                        <Component {...this.props} ref={(ref: any) => this.#resolveRef(ref)} />
+                        : <Component {...this.props} />
+                    )
                     : <Loading isError={isError} isLoading={isLoading} isTimedOut={isTimedOut} retry={this.getComponent} />
             );
         }
