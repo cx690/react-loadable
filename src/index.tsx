@@ -48,7 +48,10 @@ interface IpProps<T = any> {
 
 const ALL_INITIALIZERS: (() => asyncCom)[] = [];
 const READY_INITIALIZERS: Promise<{ default: React.FC | React.ComponentClass }>[] = [];
-
+declare class AsyncCom<T> extends React.Component<T> {
+    constructor(props: T);
+    getRef(): Promise<any>;
+}
 // T is loader component's propsType
 export default function Loadable<T = any>(option: IpProps<T> | (() => asyncCom<T>)) {
     let importComponent: () => asyncCom,
@@ -71,9 +74,9 @@ export default function Loadable<T = any>(option: IpProps<T> | (() => asyncCom<T
             Component?: React.ElementType;
         };
 
-        // React.ComponentClass<T> | 
-        /** '#' start means private property  */
+        /** private property  */
         #refPromise: Promise<any>;
+        /** private property  */
         #resolveRef: (value: any) => void;
         constructor(props: any) {
             super(props);
@@ -88,7 +91,7 @@ export default function Loadable<T = any>(option: IpProps<T> | (() => asyncCom<T
                 this.#resolveRef = resolve;
             });
         }
-        async getComponent() {
+        private async getComponent() {
             const index = ALL_INITIALIZERS.indexOf(importComponent);
             this.setState({
                 isLoading: true,
@@ -132,7 +135,7 @@ export default function Loadable<T = any>(option: IpProps<T> | (() => asyncCom<T
             this.setState = () => false;
         }
 
-        handleRes(res: any) {
+        private handleRes(res: any) {
             const { isTimedOut, isError, default: Component } = res;
             if (isTimedOut) {
                 this.setState({
@@ -158,7 +161,7 @@ export default function Loadable<T = any>(option: IpProps<T> | (() => asyncCom<T
         }
 
         /** get resolve component ref  */
-        async getRef() {
+        public async getRef() {
             return this.#refPromise;
         }
 
@@ -166,15 +169,13 @@ export default function Loadable<T = any>(option: IpProps<T> | (() => asyncCom<T
             const Loading = loading;
             const { isError, isLoading, isTimedOut, Component } = this.state;
 
-            return (
-                Component
-                    //@ts-ignore
-                    ? ((Component.$$typeof === forwardRefSymbol || React.Component.isPrototypeOf(Component)) ?
-                        <Component {...this.props} ref={(ref: any) => this.#resolveRef(ref)} />
-                        : <Component {...this.props} />
-                    )
-                    : <Loading isError={isError} isLoading={isLoading} isTimedOut={isTimedOut} retry={this.getComponent} />
-            );
+            return Component
+                //@ts-ignore
+                ? ((Component.$$typeof === forwardRefSymbol || React.Component.isPrototypeOf(Component)) ?
+                    <Component {...this.props} ref={(ref: any) => this.#resolveRef(ref)} />
+                    : <Component {...this.props} />
+                )
+                : <Loading isError={isError} isLoading={isLoading} isTimedOut={isTimedOut} retry={this.getComponent} />
         }
-    }
+    } as unknown as typeof AsyncCom<T>
 }
